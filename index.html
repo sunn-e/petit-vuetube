@@ -8,15 +8,27 @@
       rel="stylesheet"
     />
     <!--  query and Initiate all elem that use petit vue -->
-    <script src="https://unpkg.com/petite-vue" defer init></script>
+    <!-- <script src="https://unpkg.com/petite-vue" defer init></script> -->
+    <script type="module">
+      import { createApp } from "https://unpkg.com/petite-vue?module";
+      createApp({
+        count: 0,
+        increment() {
+          this.count++;
+        },
+      }).mount("#app");
+    </script>
 
-    <div v-scope="{count: 0}" class="p-4 text-2xl font-bold">
+    <div id="app" class="p-4 text-2xl font-bold">
       <div>My count is {{count}}</div>
       <div
         v-effect="if (count > 1) %el.textContent = count"
         class="text-pink-500"
       ></div>
-      <button @click="count++" class="p-2 rounded-md bg-purple-400 text-white">
+      <button
+        @click="increment"
+        class="p-2 rounded-md bg-purple-400 text-white"
+      >
         Count++
       </button>
     </div>
