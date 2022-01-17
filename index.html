@@ -13,6 +13,7 @@
       import { createApp } from "https://unpkg.com/petite-vue?module";
       function Counter(props) {
         return {
+          $template: "#counter-template",
           count: props.startingCount,
           increment() {
             this.count++;
@@ -27,39 +28,24 @@
       }).mount();
     </script>
 
-    <div
-      v-scope="Counter({startingCount:0})"
-      id="app"
-      class="p-4 text-2xl font-bold"
-    >
-      <div>My count is {{count}}</div>
-      <div
-        v-effect="if (count > 1) %el.textContent = count"
-        class="text-pink-500"
-      ></div>
-      <button
-        @click="increment"
-        class="p-2 rounded-md bg-purple-400 text-white"
-      >
-        Count++
-      </button>
-    </div>
-    <div
-      v-scope="Counter({startingCount:34.5})"
-      id="app"
-      class="p-4 text-2xl font-bold"
-    >
-      <div>My count is {{count}}</div>
-      <div
-        v-effect="if (count > 1) %el.textContent = count"
-        class="text-pink-500"
-      ></div>
-      <button
-        @click="increment"
-        class="p-2 rounded-md bg-purple-400 text-white"
-      >
-        ount++
-      </button>
-    </div>
+    <!-- templates are like components -->
+    <template id="counter-template">
+      <div class="p-4 text-2xl font-bold">
+        <div>My count is {{count}}</div>
+        <div
+          v-effect="if (count > 1) %el.textContent = count"
+          class="text-pink-500"
+        ></div>
+        <button
+          @click="increment"
+          class="p-2 rounded-md bg-purple-400 text-white"
+        >
+          Count++
+        </button>
+      </div>
+    </template>
+
+    <div v-scope="Counter({startingCount:0})"></div>
+    <div v-scope="Counter({startingCount:34.5})"></div>
   </body>
 </html>
