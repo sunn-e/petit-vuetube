@@ -11,41 +11,62 @@
     <!-- <script src="https://unpkg.com/petite-vue" defer init></script> -->
     <script type="module">
       import { createApp } from "https://unpkg.com/petite-vue?module";
-      function Counter(props) {
+      function Container(props) {
         return {
-          $template: "#counter-template",
-          count: props.startingCount,
-          increment() {
-            this.count++;
-          },
-          mounted() {
-            alert.alert("I'm mounted");
+          terms: "Kygo|diplo|skrillex|zedd",
+          key: "ENTER_YT_KEYS",
+          async getVideos() {
+            var channelInfo = await fetch(
+              `https://www.googleapis.com/youtube/v3/search?key=${this.key}&q=${this.terms}&part=snippet,id&order=date&maxResults=20`
+            );
+            var response = await channelInfo.json();
+            this.videos = response.items;
           },
         };
       }
+
+      function Video(props) {
+        return {
+          $template: "#video-component",
+          videoId: props.videoId,
+          thumbnail: props.thumbnail,
+          title: props.title,
+        };
+      }
+
       createApp({
-        Counter,
+        Container,
+        Video,
       }).mount();
     </script>
 
-    <!-- templates are like components -->
-    <template id="counter-template">
-      <div class="p-4 text-2xl font-bold">
-        <div>My count is {{count}}</div>
-        <div
-          v-effect="if (count > 1) %el.textContent = count"
-          class="text-pink-500"
-        ></div>
-        <button
-          @click="increment"
-          class="p-2 rounded-md bg-purple-400 text-white"
-        >
-          Count++
-        </button>
+    <template id="video-component">
+      <div>
+        <a :href="`https://youtube.com/watch?v=${videoId}`">
+          <img :src="`${thumbnail}`" alt="thumbnail" class="h-20 w-20" />
+          <p>{{title}}</p>
+        </a>
       </div>
     </template>
-
-    <div v-scope="Counter({startingCount:0})"></div>
-    <div v-scope="Counter({startingCount:34.5})"></div>
+    <div v-scope="Container()">
+      <input v-model="terms" type="text" class="border p-2" />
+      <button
+        @click="getVideos"
+        class="p-2 rounded-md bg-yellow-500 font-black"
+      >
+        Show
+      </button>
+      <div>
+        <div
+          v-for="(video,index) in videos"
+          :key="index"
+          class="p-4 m-4 bg-pink-500"
+        >
+          <div
+            v-scope="Video({videoId: video.id.videoId, thumbnail: video.snippet.thumbnails.high.url, title: video.snippet.title})"
+          ></div>
+        </div>
+      </div>
+    </div>
   </body>
 </html>
